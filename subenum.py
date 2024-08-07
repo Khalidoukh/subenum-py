@@ -1,6 +1,7 @@
 import datetime
 import json
 import re
+import subprocess
 from bs4 import BeautifulSoup
 import requests
 import os 
@@ -31,6 +32,9 @@ if is_valid_domain(domain_name) :
                     print(domains)
                     with open(f"{domain_name}-sectrial-subdomains.txt", 'a') as file:
                          file.write(domains+ '\n')
+                         # add this subdomains to the final subdomain 
+                         command = f"cat {domain_name}-sectrial-subdomains.txt | anew final-subdomains-{domain_name}.txt "
+                         subprocess.run(command, shell=True)
 
 
             else:
@@ -65,12 +69,15 @@ for n in range(month, 6, -1):
         if len(response.content) > 30000:
             soup = BeautifulSoup(response.content, 'html.parser')
             subdomains = soup.find_all('a', class_='link sd')  # Replace with the actual tag and class
-            print(f"writing security-trail subdomains to file : {domain_name}-c99-subdomains.txt" ...")
+            print(f"writing security-trail subdomains to file : {domain_name}-c99-subdomains.txt ...")
 
             for subdomain in subdomains:
                 print(subdomain.text)
                 with open(f"{domain_name}-c99-subdomains.txt", 'a') as file:
                      file.write(subdomain.text + "\n")
+                     command = f"cat {domain_name}-c99-subdomains.txt | anew final-subdomains-{domain_name}.txt "
+                     subprocess.run(command,shell=True)
+
             found = True 
             break            
             # Stop the loop once a successful response is found
